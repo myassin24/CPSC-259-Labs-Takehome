@@ -339,5 +339,46 @@ int calculate_score(char* sample_segment, char* candidate_segment)
   int sample_length_in_codons = sample_length / 3;
 
   // Insert your code here (replace this return statement with your own code)
+  int i=0;
+  char codon_buff_sample[5];
+  char codon_buff_can[5];
+  int match;
+
+  int index_s;
+  int index_c;
+
+
+  //divide string by codon lengths
+  while (candidate_segment != NULL) {
+      for (i = 0;i < sample_length_in_codons; i++) {
+          //check if codons match
+          match = strncmp(sample_segment + 3 * i, candidate_segment + 3 * i + iterations,3);
+          if (match == 0) {
+              score += 10;
+          }
+
+          //check if codons are the same amino acid
+          else {
+              strncpy(codon_buff_sample, sample_segment + 3 * i, 3);
+              strncpy(codon_buff_can, candidate_segment + 3 * i + iterations, 3);
+
+              index_s = get_codon_index(codon_buff_sample);
+              index_c = get_codon_index(codon_buff_can);
+
+              if (index_s == index_c) {
+                  score +=5
+              }
+
+              //check if matching letter
+              //check if part of base pair
+          }
+
+      }
+ }
+
+  //check if codons match
+  //check if codons are the same amino acid
+  //check if matching letter
+  //check if part of base pair
   return 0;
 }
