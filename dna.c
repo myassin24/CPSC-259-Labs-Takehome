@@ -6,8 +6,8 @@
               specified sample.  The formatted DNA
               sequence file is a txt file (threes samples
               are provided in the Resource Files folder).
- Author:			Your names
- Student #s:	12345678 and 12345678
+ Author:	  Munira Yassin
+ Student #s:  80535743 and 12345678
  CWLs:	      cwl1 and cwl2
  Date:				Add the date here
  */
@@ -267,32 +267,50 @@ void analyze_segments(char* sample_segment, char** candidate_segments, int numbe
   // Insert your code here
 
   /* Hint: Return early if we have found and reported perfect match(es) */
+ 
 
-  for(i=0; i<number_of_candidates;i++) {
+  for (i = 0; i < number_of_candidates;i++) {
 
 
       has_perfect_match = strcmp(sample_segment, *candidate_segments);
 
-;      if (has_perfect_match >= 0) {
-          
-          sprintf(int_buffer, " %d", i+1);
+      ;      if (has_perfect_match >= 0) {
+
+          sprintf(int_buffer, " %d", i + 1);
           strcat(outputline_buffer, "Candidate number");
           strcat(outputline_buffer, int_buffer);
           strcat(outputline_buffer, " is a perfect match\n");
           strcpy(output_string, outputline_buffer);
       }
 
-  }
 
-  // Insert your code here
 
-  /* Hint: Otherwise we need to calculate and print all of the scores by invoking
-     calculate_score for each candidate_segment. Write an output line for each
-     candidate_segment and concatenate your line to output_string.
-     Don't forget to clear your outputline_buffer for each new line*/
-  for (i = 0; i < number_of_candidates; ++i) {
+      // Insert your code here
 
-    // Insert your code here - maybe a call to calculate_score?
+      /* Hint: Otherwise we need to calculate and print all of the scores by invoking
+         calculate_score for each candidate_segment. Write an output line for each
+         candidate_segment and concatenate your line to output_string.
+         Don't forget to clear your outputline_buffer for each new line*/
+
+
+      for (i = 0; i < number_of_candidates; ++i) {
+
+          // Insert your code here - maybe a call to calculate_score?
+          score = calculate_score(sample_segment, *(candidate_segments + i));
+
+          scores = &score; //pointer gets the address of score
+
+          sprintf(int_buffer, "%d", i+1);
+          strcat(outputline_buffer, "Candidate number ");
+          strcat(outputline_buffer, int_buffer);
+          strcat(outputline_buffer, "matches with a score of ");
+          sprintf(scores, "%d", score);
+          strcat(outputline_buffer, scores);
+          strcat(outputline_buffer, ".\n");
+
+          strcpy(output_string, outputline_buffer);
+
+      }
   }
 
   /* End of function */
@@ -339,6 +357,8 @@ int calculate_score(char* sample_segment, char* candidate_segment)
   int sample_length_in_codons = sample_length / 3;
 
   // Insert your code here (replace this return statement with your own code)
+  int candidate_length_in_codons = candidate_length/ 3;
+
   int i=0;
   char codon_buff_sample[5];
   char codon_buff_can[5];
@@ -347,38 +367,86 @@ int calculate_score(char* sample_segment, char* candidate_segment)
   int index_s;
   int index_c;
 
+  int base_pair;
+  int base_pair2;
+  int base_pair3;
+
+  int stp1;
+  int stp2;
+  int stp3;
+
 
   //divide string by codon lengths
-  while (candidate_segment != NULL) {
+  while (iterations < (candidate_length_in_codons-sample_length_in_codons)) {
+
+      //checking if candidate has stop codon
+
       for (i = 0;i < sample_length_in_codons; i++) {
           //check if codons match
-          match = strncmp(sample_segment + 3 * i, candidate_segment + 3 * i + iterations,3);
-          if (match == 0) {
-              score += 10;
-          }
+          strncpy(codon_buff_sample, sample_segment+3*i, 3);
+          strncpy(codon_buff_can, candidate_segment + 3 * i + 3 * iterations, 3);
+          index_s = get_codon_index(codon_buff_sample);
+          index_c = get_codon_index(codon_buff_can);
 
-          //check if codons are the same amino acid
-          else {
-              strncpy(codon_buff_sample, sample_segment + 3 * i, 3);
-              strncpy(codon_buff_can, candidate_segment + 3 * i + iterations, 3);
-
-              index_s = get_codon_index(codon_buff_sample);
-              index_c = get_codon_index(codon_buff_can);
-
-              if (index_s == index_c) {
-                  score +=5
+        
+      
+              match = strncmp(sample_segment + 3 * i, candidate_segment + 3 * i + 3 * iterations, 3);
+              if (match == 0) {
+                  score += 10;
               }
 
-              //check if matching letter
-              //check if part of base pair
-          }
+              //check if codons are the same amino acid
+              else {
+                  //printf("%c%c%c \n", codon_buff_sample[0], codon_buff_sample[1], codon_buff_sample[2]);
+                  //printf("%c%c%c \n", codon_buff_can[0], codon_buff_can[1], codon_buff_can[2]);
+
+                 
+                  //printf("%d %d ", index_s, index_c);
+
+                  if (index_s == index_c) {
+                      score += 5;
+                  }
+                  else {
+                      //checking is same letter
+                      if (codon_buff_sample[0] == codon_buff_can[0]) {
+                          score += 2;
+                      }
+                      if (codon_buff_sample[1] == codon_buff_can[1]) {
+                          score += 2;
+                      }
+                      if (codon_buff_sample[2] == codon_buff_can[2]) {
+                          score += 2;
+                      }
+
+                      //checking if base pair
+                      base_pair = is_base_pair(codon_buff_sample[0], codon_buff_can[0]);
+                      base_pair2 = is_base_pair(codon_buff_sample[1], codon_buff_can[1]);
+                      base_pair3 = is_base_pair(codon_buff_sample[2], codon_buff_can[2]);
+
+                      if (base_pair == 1) {
+                          score += 1;
+                      }
+                      if (base_pair2 == 1) {
+                          score += 1;
+                      }
+                      if (base_pair3 == 1) {
+                          score += 1;
+                      }
+
+                  }
+
+              }
+       
 
       }
- }
+      //checking if stop
+      if (index_c == 34 || index_c == 35 || index_c == 50) {
+          return score;
+      }
 
-  //check if codons match
-  //check if codons are the same amino acid
-  //check if matching letter
-  //check if part of base pair
-  return 0;
+      iterations += 1;
+  }
+
+  
+  return score;
 }
