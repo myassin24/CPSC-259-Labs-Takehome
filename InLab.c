@@ -1,9 +1,9 @@
 /*
  File:				lab2_in-lab_exercises.c
  Purpose:			Implementation of functions for lab 2 in-lab exercises
- Author:			Your names
- Student #s:	12345678 and 12345678
- CWLs:	      cwl1 and cwl2
+ Author:			____ and Jackson Rockford
+ Student #s:	12345678 and 99991564
+ CWLs:	      cwl1 and jrockfor
  Date:				Add the date here
  */
 
@@ -23,15 +23,13 @@
  * POST:      the contents of two integer variables are swapped
  * RETURN:    VOID
  */
-void swap_ints(int* first_int, int* second_int)
-{
+void swap_ints(int* first_int, int* second_int) {
 	int temp;
 
 	temp = *first_int;
 	*first_int = *second_int;
 
 	*second_int = temp;
-  // Insert your code here
 }
 
 /*
@@ -46,17 +44,13 @@ void swap_ints(int* first_int, int* second_int)
  * POST:      the char array has been reversed
  * RETURN:    VOID
  */
-void reverse_string(char* string)
-{
-  // Insert your code here
+void reverse_string(char* string) {
 	char temp;
 	int size_l = 0;
 	int i = 0;
-
 	if (string != NULL) {
 		size_l = strlen(string);
 	}
-	
 	for (i = 0;i < (size_l / 2); i++) {
 		temp = *(string + i);
 		*(string + i) = *(string + size_l - 1 - i);
@@ -79,26 +73,19 @@ void reverse_string(char* string)
  * RETURN:    IF candidate contains sample THEN 1
  *            ELSE 0.
  */
-int contains_sample(char* candidate, char* sample)
-{
-  // Replace this return statement with your code
+int contains_sample(char* candidate, char* sample) {
 	int size_c = 0;
 	int size_s = 0;
 	int cmp = 0;
-
 	if ((candidate != NULL)&&(sample != NULL)) {
-		size_c = strlen(candidate);
-		size_s = strlen(sample);
-
 		cmp = strstr(candidate, sample);
-			if (cmp != NULL) {
-				return 1;
+		if (cmp != NULL) {
+			return 1;
 		}
-			else {
-				return 0;
-			}
+		else {
+			return 0;
+		}
 	}
-
 	return 0;
 }
 
@@ -118,9 +105,7 @@ int contains_sample(char* candidate, char* sample)
  *            THEN the index where the first letter of sample is inside candidate
  *            ELSE -1.
  */
-int find_index(char* candidate, char* sample)
-{
-  // Replace this return statement with your code
+int find_index(char* candidate, char* sample) {
 	char* ind;
 
 	if ((candidate == NULL)||(sample == NULL)) {
