@@ -8,9 +8,9 @@ specified sample.The formatted DNA
 sequence file is a txt file(threes samples
     are provided in the Resource Files folder).
     Author : Munira Yassin
-    Student #s : 80535743 and 12345678
-    CWLs : ymunira and cwl2
-    Date : Add the date here
+    Student #s : Munira Yassin and Jackson Rockford
+    CWLs : ymunira and jrockfor
+    Date : 10-12-2024
     * /
 
     /******************************************************************
@@ -298,7 +298,7 @@ void analyze_segments(char* sample_segment, char** candidate_segments, int numbe
         for (i = 0; i < number_of_candidates; ++i) {
 
             // Insert your code here - maybe a call to calculate_score?
-           // printf("Scoring candidate # %d\n", i + 1);
+           //printf("Scoring candidate # %d\n", i + 1);
             score = calculate_score(sample_segment, *(candidate_segments + i));
            // printf("Score of candidate # %d is %d\n", i + 1, score); 
             //Line below is somehow corrupting stack data around "score"
@@ -374,9 +374,9 @@ int calculate_score(char* sample_segment, char* candidate_segment)
 
 
     //divide string by codon lengths
-    while (iterations < (candidate_length_in_codons - sample_length_in_codons)) {
+    while (iterations <= (candidate_length_in_codons - sample_length_in_codons)) {
         temp_score = 0;                                                                                 //mandatory reset of temp score every iteration
-      
+       
 
         for (i = 0; i < sample_length_in_codons; i++) {                                                // main for loop comparing every codon between the sample and candidate length during one interation
             //////////////////////////////////////////////////////////////////////////////////General Housekeeping///////////////////////////////////////////////////////////////////////////////////////////
@@ -411,6 +411,7 @@ int calculate_score(char* sample_segment, char* candidate_segment)
             match = strncmp(sample_segment + 3 * i, candidate_segment + 3 * i + 3 * iterations, 3);
             if (match == 0) {
                 temp_score += 10;
+                
             }
 
             //Non match so we check if codons are the same amino acid
@@ -419,6 +420,7 @@ int calculate_score(char* sample_segment, char* candidate_segment)
                 //printf("%c%c%c \n", codon_buff_can[0], codon_buff_can[1], codon_buff_can[2]);
                // int res = strcmp(acid_s, acid_c);
                // printf("%d \n", res);
+               
                 if (strcmp(acid_s,acid_c)==0) {
                    temp_score += 5;
                 }
@@ -448,6 +450,7 @@ int calculate_score(char* sample_segment, char* candidate_segment)
                     if (base_pair3 == 1) {
                         temp_score += 1;
                     }
+                 
 
                 }
 
@@ -459,16 +462,27 @@ int calculate_score(char* sample_segment, char* candidate_segment)
        
         /////////////////////////////////////////////////////////////////////////////////Final Score///////////////////////////////////////////////////////////////////////////////////////
         //determine if the temp_score for this round is greater than the previous score. If so, set the new score to the temp_score, otherwise iterate by one to skip one codon of the candidate segment and start the loop again
-        if (temp_score > score) {
+        
+        if (temp_score >= score) {
             score = temp_score;
         }
        // if (index_c == 34 || index_c == 35 || index_c == 50) {           //removing this makes code work why????? I thought we had to check for the stop codon?? What is going on????????
-       //     return score;
-        //}
-        iterations += 1;
+         //  
+         //   return score;
+
+      // }
+      
+       iterations += 1;
+       
+
+     
+       
        
     }
 
+    //if (temp_score >= score) {
+     //   score = temp_score;
+   // }
 
     return score;
 }
