@@ -1,4 +1,3 @@
-
 /*
 File:        dna.c
 Purpose : Consumes a formatted DNA sequence file
@@ -244,9 +243,7 @@ int extract_dna(FILE* file_pointer, char** sample_segment, char*** candidate_seg
  * POST:      NULL
  * RETURN:    VOID
  */
-void analyze_segments(char* sample_segment, char** candidate_segments, int number_of_candidates, char* output_string)
-{
-    /* Some helpful variables you might want to use */
+void analyze_segments(char* sample_segment, char** candidate_segments, int number_of_candidates, char* output_string) {
     int* scores[1000];
     int sample_length = strlen(sample_segment);
     int candidate_length = strlen(*candidate_segments);
@@ -256,18 +253,6 @@ void analyze_segments(char* sample_segment, char** candidate_segments, int numbe
     char outputline_buffer[BUFSIZE] = "\0";
     char int_buffer[BUFSIZE];
 
-    /* Hint: Check to see if any candidate segment(s) are a perfect match, and report them
-       (REMEMBER: don't ignore trailing nucleotides when searching for a perfect score)
-       Report the result by concatenating to output_string using the strcat(...) function.
-       See the comments above this function for the output string format for each line
-       Use sprintf(char * str, const char * format, ...) to convert an integer into string
-       which can then be concatenated using strcat(...)
-       e.g. sprintf(int_buffer, "%d", i);
-            strcat(outputline_buffer, "Candidate number ");
-            strcat(outputline_buffer, int_buffer);
-            strcat(outputline_buffer, " is a perfect match\n");*/
-
-            // Insert your code here
     for (i = 0; i < number_of_candidates; i++) {
 
 
@@ -282,26 +267,8 @@ void analyze_segments(char* sample_segment, char** candidate_segments, int numbe
             strcpy(output_string, outputline_buffer);
         }
 
-        /* Hint: Return early if we have found and reported perfect match(es) */
-      
-
-
-
-        // Insert your code here
-
-        /* Hint: Otherwise we need to calculate and print all of the scores by invoking
-           calculate_score for each candidate_segment. Write an output line for each
-           candidate_segment and concatenate your line to output_string.
-           Don't forget to clear your outputline_buffer for each new line*/
-
-
         for (i = 0; i < number_of_candidates; ++i) {
-
-            // Insert your code here - maybe a call to calculate_score?
-           //printf("Scoring candidate # %d\n", i + 1);
             score = calculate_score(sample_segment, *(candidate_segments + i));
-           // printf("Score of candidate # %d is %d\n", i + 1, score); 
-            //Line below is somehow corrupting stack data around "score"
             sprintf(int_buffer, "%d", i + 1);
             strcat(outputline_buffer, "Candidate number ");
             strcat(outputline_buffer, int_buffer);
@@ -313,8 +280,6 @@ void analyze_segments(char* sample_segment, char** candidate_segments, int numbe
 
         }
     }
-
-    /* End of function */
     return;
 }
 
@@ -357,28 +322,23 @@ int calculate_score(char* sample_segment, char* candidate_segment)
     int candidate_length = strlen(candidate_segment);         // length of candidate
     int sample_length_in_codons = sample_length / 3;          //sample length divided into codons
     int candidate_length_in_codons = (candidate_length / 3);   //candidate length divided into codons
-
     int i = 0;
     char codon_buff_sample[CODON_SYMBOL_LENGTH] = "\0";         //used to store specific codons for comparison for: matching indices, matching codons, matching base pairs
-    char codon_buff_can[CODON_SYMBOL_LENGTH]= "\0";
-    int match;    
-     
+    char codon_buff_can[CODON_SYMBOL_LENGTH] = "\0";
+    int match;
     int index_s = 0;                //finding specific index variables for codons
     int index_c = 0;
     char acid_s[BUFSIZE];           //finding the codons' amino acids from the lookup table
     char acid_c[BUFSIZE];
-
-    int base_pair;                  //base pair variables
-    int base_pair2;
-    int base_pair3;
+    int base_pair, base_pair2, base_pair3;                  //base pair variables
 
 
     //divide string by codon lengths
     while (iterations <= (candidate_length_in_codons - sample_length_in_codons)) {
-        temp_score = 0;                                                                                 //mandatory reset of temp score every iteration
-       
+        temp_score = 0;   //mandatory reset of temp score every iteration
 
-        for (i = 0; i < sample_length_in_codons; i++) {                                                // main for loop comparing every codon between the sample and candidate length during one interation
+
+        for (i = 0; i < sample_length_in_codons; i++) {   // main for loop comparing every codon between the sample and candidate length during one interation
             //////////////////////////////////////////////////////////////////////////////////General Housekeeping///////////////////////////////////////////////////////////////////////////////////////////
             //Before scoring we need to set up the codons we wish to analyze. In this section we iterate to the next codon for sample and candidate. Then we store those values in their corresponding buffers and check for their positions in the lookup tables
 
@@ -387,7 +347,7 @@ int calculate_score(char* sample_segment, char* candidate_segment)
             strncpy(codon_buff_sample, sample_segment + 3 * i, 3);
             strncpy(codon_buff_can, candidate_segment + 3 * i + 3 * iterations, 3);
 
-           
+
             //using the get codon index function to receive the index the coodon is at in the lookup table provided.
             index_s = get_codon_index(codon_buff_sample);
             index_c = get_codon_index(codon_buff_can);
@@ -397,32 +357,20 @@ int calculate_score(char* sample_segment, char* candidate_segment)
             strcpy(acid_s, codon_names[index_s]);
             strcpy(acid_c, codon_names[index_c]);
 
-            //print f statements to check if we are receiving the corrected indices and amino acid names
-            //printf("%d %d ", index_s, index_c);
-
-           // printf("%c%c%c  %c%c%c", acid_s[0], acid_s[1], acid_s[2], acid_c[0],acid_c[1],acid_c[2]);
-            //printf("\n");
-
-
-
             ////////////////////////////////////////////////////////////////////////////////////////////actual scoring///////////////////////////////////////////////////////////////////////////////////////
             //the next section is for all the possible scoring cases each codon can receive. First is if both the sample codon and the candidate codon match excatly. In that case they will add 10 to their score
 
             match = strncmp(sample_segment + 3 * i, candidate_segment + 3 * i + 3 * iterations, 3);
             if (match == 0) {
                 temp_score += 10;
-                
+
             }
 
             //Non match so we check if codons are the same amino acid
             else {
-                //printf("%c%c%c \n", codon_buff_sample[0], codon_buff_sample[1], codon_buff_sample[2]);
-                //printf("%c%c%c \n", codon_buff_can[0], codon_buff_can[1], codon_buff_can[2]);
-               // int res = strcmp(acid_s, acid_c);
-               // printf("%d \n", res);
-               
-                if (strcmp(acid_s,acid_c)==0) {
-                   temp_score += 5;
+
+                if (strcmp(acid_s, acid_c) == 0) {
+                    temp_score += 5;
                 }
                 else {
                     //checking is same letter
@@ -450,7 +398,7 @@ int calculate_score(char* sample_segment, char* candidate_segment)
                     if (base_pair3 == 1) {
                         temp_score += 1;
                     }
-                 
+
 
                 }
 
@@ -459,30 +407,12 @@ int calculate_score(char* sample_segment, char* candidate_segment)
 
         }
 
-       
-        /////////////////////////////////////////////////////////////////////////////////Final Score///////////////////////////////////////////////////////////////////////////////////////
-        //determine if the temp_score for this round is greater than the previous score. If so, set the new score to the temp_score, otherwise iterate by one to skip one codon of the candidate segment and start the loop again
-        
         if (temp_score >= score) {
             score = temp_score;
         }
-       // if (index_c == 34 || index_c == 35 || index_c == 50) {           //removing this makes code work why????? I thought we had to check for the stop codon?? What is going on????????
-         //  
-         //   return score;
+        iterations += 1;
 
-      // }
-      
-       iterations += 1;
-       
-
-     
-       
-       
     }
-
-    //if (temp_score >= score) {
-     //   score = temp_score;
-   // }
 
     return score;
 }
