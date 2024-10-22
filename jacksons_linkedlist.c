@@ -2,9 +2,9 @@
  File:         linkedlist.c
  Purpose:      Implements the linked list functions whose prototypes
                are declared in the linked_list.h header file
- Author:       Your names
- Student #s:   12345678 and 12345678
- CWLs:         cwl1 and cwl2
+ Author:       Munira Yassin
+ Student #s:   80535743 and 12345678
+ CWLs:         ymunira and cwl2
  Date:         Add the date here
  */
 
@@ -31,9 +31,9 @@
   */
 node* create_linked_list()
 {
-  // Insert your code here
+    // Insert your code here
     node* head = NULL;
-    return 
+    return head;
 }
 
 /*
@@ -50,9 +50,14 @@ node* create_linked_list()
 node* create_node(airplane plane)
 {
     node* temp;
-    temp = (node*)malloc(sizeof(struct airplane));
+    temp = (node*)malloc(sizeof(node));
+   
+    //we need to give the temp node the information from the given plane 
+    temp->plane = plane;
+    //making temp point to nothing
+    temp->next = NULL;
 
-    return &temp;
+    return temp;
 }
 
 /*
@@ -68,10 +73,25 @@ node* create_node(airplane plane)
  */
 node* prepend_node(node* list, node* new_node)
 {
-  // Insert your code here
+    // Insert your code here
+   
 
-  // replace this line with something appropriate
-  return NULL;
+    //NULL check (if list is empty)
+    if (list == NULL) {
+        new_node->next = NULL;  //new_node points to nothing
+        list = new_node;
+        return list;
+    }
+    // what if new_node is NULL 
+    
+    //list is not empty
+    //make new node point to where list is pointing to
+    new_node->next = list;
+    list = new_node;
+    
+
+    // replace this line with something appropriate
+    return list;
 }
 
 /*
@@ -87,10 +107,23 @@ node* prepend_node(node* list, node* new_node)
  */
 node* delete_node(node* list)
 {
-  // Insert your code here
+    // Insert your code here
+    
+    //NULL check
+    if (list == NULL) {
+        return NULL;
+    }
 
-  // replace this line with something appropriate
-  return NULL;
+    node* ptr = list;
+
+    ptr = list;
+    list = list->next;
+    //ptr ->next = NULL;
+    free(ptr);
+
+
+    // replace this line with something appropriate
+    return list;
 }
 
 /*
@@ -102,10 +135,23 @@ node* delete_node(node* list)
  */
 int get_length(node* list)
 {
-  // Insert your code here
+    // Insert your code here
+    
+    //NULL check
+    if (list == NULL) {
+        return 0;
+    }
 
-  // replace this line with something appropriate
-  return -1;
+    int length = 0;
+    node* ptr = list;
+
+    while (ptr != NULL) {
+        length++;
+        ptr = ptr->next;
+    }
+
+    // replace this line with something appropriate
+    return length;
 }
 
 /*
@@ -118,10 +164,31 @@ int get_length(node* list)
  */
 node* delete_list(node* list)
 {
-  // Insert your code here
+    // Insert your code here
+    //NULL
+    if (list == NULL) {
+        return list;
+    }
+    
+    int length = get_length(list);
+    node* deleted_node = list;
+    list = list->next;
 
-  // replace this line with something appropriate
-  return list;
+    if (length == 1) {
+        deleted_node = NULL;
+        free(deleted_node);
+        return deleted_node;
+    }
+    
+    while (list != NULL) {
+        free(deleted_node);
+        deleted_node = list;
+        list = list->next;
+    }
+
+    free(deleted_node);
+    // replace this line with something appropriate
+    return list;
 }
 
 /*
@@ -138,8 +205,27 @@ node* delete_list(node* list)
  */
 void print_node(node* node_to_print)
 {
-  // Insert your code here
+    // Insert your code here
+    if (node_to_print == NULL) {
+        return;
+    }
 
+    /*typedef struct airplane {
+	// Add your member elements here
+	int flight_number;
+	char* city_origin;
+	char* city_destination;
+	int	priority;
+	int	maximum_speed_kph;
+	int	cruising_altitude;
+	int	capacity;
+} airplane;*/
+
+   /* printf("flight_number: ");
+    printf("city_origin: ");
+    printf("flight_number: ");
+    printf("flight_number: ");
+    printf("flight_number: "); */
 }
 
 /*
@@ -155,7 +241,7 @@ void print_node(node* node_to_print)
  */
 void print_list(node* list_to_print)
 {
-  // Insert your code here
+    // Insert your code here
 
 }
 
@@ -170,10 +256,31 @@ void print_list(node* list_to_print)
  */
 node* reverse(node* list)
 {
-  // Insert your code here
+    // Insert your code here
+    //Null check
+    if (list == NULL) {
+        return NULL;
+    }
 
-  // replace this line with something appropriate
-  return NULL;
+    node* ptr;
+    node* prev;
+    node* next;
+
+    ptr = list;
+    prev = NULL;
+    next = NULL;
+    
+
+    while (ptr != NULL) {
+        next = ptr->next;
+        ptr->next = prev;
+        prev = ptr;
+        ptr = next;
+    }
+
+    list = prev;
+    // replace this line with something appropriate
+    return list;
 }
 
 /*
@@ -190,10 +297,50 @@ node* reverse(node* list)
  */
 node* remove_from_list(node* list, char* destination_city)
 {
-  // Insert your code here
+    // Insert your code here
 
-  // replace this line with something appropriate
-  return NULL;
+    //NULL check
+    if (list == NULL) {
+        return list;
+    }
+
+    //only one thing in your list
+    if (list->next == NULL) {
+        if (strcmp(list->plane.city_destination, destination_city) == 0) {
+            list = NULL;
+            free(list);
+            return NULL;
+        }
+    }
+
+    node* ptr;
+    node* prev;
+    node* next;
+
+    ptr = list;
+    prev = ptr;
+    ptr = ptr->next;
+
+    while (ptr != NULL) {
+        next = ptr->next;
+        if (strcmp(ptr->plane.city_destination, destination_city) == 0) {
+            prev->next = ptr->next;
+            free(ptr);
+            ptr = next;
+            prev = ptr;
+
+        }
+        else {
+            prev = ptr;
+            ptr = next;
+        }
+       
+    }
+
+
+   
+    // replace this line with something appropriate
+    return list;
 }
 
 /*
@@ -209,10 +356,34 @@ node* remove_from_list(node* list, char* destination_city)
  */
 node* retrieve_nth(node* list, int ordinality)
 {
-  // Insert your code here
+    // Insert your code here
+    // NULL check
+    if (list == NULL) {
+        return list;
+    }
+    // ordinality > 0
+    if (ordinality <= 0) {
+        return NULL;
+    }
+    // ordinality <= list length
+    if (ordinality > get_length(list)) {
+        return NULL;
+    }
+    if (ordinality == 1) {
+        return list;
+    }
 
-  // replace this line with something appropriate
-  return NULL;
+    node* ptr = list;
+    int i = 1;
+
+    while (i < ordinality) {
+        ptr = ptr->next;
+        i++;
+    }
+    
+
+    // replace this line with something appropriate
+    return ptr;
 }
 
 /*
@@ -235,8 +406,48 @@ node* retrieve_nth(node* list, int ordinality)
  */
 node* insert_nth(node* list, node* node_to_insert, int ordinality)
 {
-  // Insert your code here
+    // Insert your code here
+    //null check
+    if ((list == NULL)  && (ordinality != 1)) {
+        return list;
+    }
+    //ord checks
+    if ((ordinality <= 0) || (ordinality > get_length(list))) {
+        return NULL;
 
-  // replace this line with something appropriate
-  return NULL;
+    }
+    if (node_to_insert == NULL) {
+        return NULL;
+    }
+    if (ordinality == 1) {
+        
+        node_to_insert->next = list;
+        list = node_to_insert;
+        return list;
+    }
+
+    node* ptr;
+    node* prev;
+
+    ptr = list;
+    prev = ptr;
+    ptr = ptr->next;
+
+    int i = 1;
+
+    while (ptr != NULL) {
+        i++;
+        if (i == ordinality) {
+                node_to_insert->next = ptr;
+                prev->next = node_to_insert;
+        }
+
+        prev = ptr;
+        ptr = ptr->next;
+    }
+
+
+
+    // replace this line with something appropriate
+    return list;
 }
