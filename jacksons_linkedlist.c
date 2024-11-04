@@ -5,7 +5,7 @@
  Author:       Munira Yassin Jackson Rockford
  Student #s:   80535743 and 99991564
  CWLs:         ymunira and jrockfor
- Date:         Add the date here
+ Date:         2024-11-03
  */
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -55,7 +55,7 @@ node* create_node(airplane plane)
    
     //temp->plane = plane;
 
-    //copying each field of plane properly just the ints
+    //copying each field of plane properly just the ints first
 
     temp->plane.flight_number = plane.flight_number;
     temp->plane.priority = plane.priority;
@@ -63,37 +63,46 @@ node* create_node(airplane plane)
     temp->plane.cruising_altitude = plane.cruising_altitude;
     temp->plane.capacity = plane.capacity;
 
-    // allocate memory and copy plane city o and cityd;
+    // allocate memory and copy plane city o and city d;
 
-    if (plane.city_origin != NULL) {
-        int city_o_length = strlen(plane.city_origin);       //size of malloc for city o
-        temp->plane.city_origin = (char*)malloc(city_o_length * sizeof(char)); //allocate
-        strcpy(temp->plane.city_origin, plane.city_origin);  //copy contents of city o
+  
+    if ((plane.city_origin!=NULL)) {
+        int city_o_length = strlen(plane.city_origin)+4;       //size of malloc for city o adding extra pointer size spaces just in case
+
+
+        temp->plane.city_origin = (char*)malloc(city_o_length * sizeof(char)); //allocate memory for city_origin
+        strcpy(temp->plane.city_origin, plane.city_origin);  //copy contents of city o from plane to temp
 
 
     }
     else {
-        free(temp->plane.city_origin);
+        free(temp->plane.city_origin);                    //get rid of empty string
         temp->plane.city_origin = NULL;
-        return temp;
+
+
+        return temp;                                      //without the freed strings
     }
 
-    if (plane.city_destination != NULL) {
-        int city_d_length = strlen(plane.city_destination);    //size of malloc for city d
-        temp->plane.city_destination = (char*)malloc(city_d_length * sizeof(char));  //allocate
-        strcpy(temp->plane.city_destination, plane.city_destination); //copy contents of city d
+    if ((plane.city_destination != NULL)) {
+        int city_d_length = strlen(plane.city_destination)+4;    //size of malloc for city d. extra pointer size spaces just in case
+
+
+        temp->plane.city_destination = (char*)malloc(city_d_length * sizeof(char));  //allocate memory for city_destination
+        strcpy(temp->plane.city_destination, plane.city_destination); //copy contents of city d to our temp node
 
 
     }
     else {
-        free(temp->plane.city_destination);
-        temp->plane.city_destination = NULL;
-        return temp;
+        free(temp->plane.city_destination);                //free temp node strings
+        temp->plane.city_destination = NULL;           
+
+
+        return temp;                                       //without relevant info
     }
 
    
     
-    //making temp point to nothing
+    //making temp point to nothing in case
     temp->next = NULL;
 
     return temp;
@@ -154,6 +163,8 @@ node* delete_node(node* list)
     }
 
    if (list->next == NULL) {
+        free(list->plane.city_destination);
+        free(list->plane.city_origin);
         free(list);
         list = NULL;
         return NULL;
@@ -178,6 +189,12 @@ node* delete_node(node* list)
     ptr->plane.flight_number = 0;*/
     //free(city_o);
     //free(city_d);
+  
+    free(ptr->plane.city_origin);
+    
+    
+    free(ptr->plane.city_destination);
+   
     free(ptr);
    
     ptr = NULL;
@@ -238,6 +255,8 @@ node* delete_list(node* list)
     while (list != NULL) {
         node* sac_node = list;
         list = list->next;
+        free(sac_node->plane.city_origin);
+        free(sac_node->plane.city_destination);
         free(sac_node);
         sac_node = NULL;
     }
@@ -367,12 +386,17 @@ node* remove_from_list(node* list, char* destination_city)
         //free(delete_node1);
         //free(list);
    
-        if (list->next == NULL) { free(list); 
+        if (list->next == NULL) { 
+            free(list->plane.city_origin);
+            free(list->plane.city_destination);
+            free(list); 
             return NULL; }
         else {
-            node* ptr_d = (node*)malloc(sizeof(node));
+            node* ptr_d;
             ptr_d = list;
             list = list->next;
+            free(ptr_d->plane.city_origin);
+            free(ptr_d->plane.city_destination);
             free(ptr_d);
             ptr_d = NULL;
         }
@@ -384,7 +408,7 @@ node* remove_from_list(node* list, char* destination_city)
     }
 
 
-    node* ptr = (node*)malloc(sizeof(node));
+    node* ptr;
     node* prev;
     node* future;
     //int i = 0;
@@ -399,12 +423,14 @@ node* remove_from_list(node* list, char* destination_city)
     while (ptr != NULL) {
         future = ptr->next;
         if (strcmp(ptr->plane.city_destination, destination_city) == 0) {
-            node* delete_node = (node*)malloc(sizeof(node));
+            node* delete_node;
             delete_node = ptr;
             prev->next = future;
             ptr = future;
             //delete_node(ptr);
             //ptr = future;
+            free(delete_node->plane.city_origin);
+            free(delete_node->plane.city_destination);
             free(delete_node);
             delete_node = NULL;
             return list;
