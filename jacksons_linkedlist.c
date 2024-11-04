@@ -2,9 +2,9 @@
  File:         linkedlist.c
  Purpose:      Implements the linked list functions whose prototypes
                are declared in the linked_list.h header file
- Author:       Munira Yassin
- Student #s:   80535743 and 12345678
- CWLs:         ymunira and cwl2
+ Author:       Munira Yassin Jackson Rockford
+ Student #s:   80535743 and 99991564
+ CWLs:         ymunira and jrockfor
  Date:         Add the date here
  */
 
@@ -51,7 +51,7 @@ node* create_node(airplane plane)
 {
     node* temp;
     temp = (node*)malloc(sizeof(node));
-   
+
     //we need to give the temp node the information from the given plane 
     temp->plane = plane;
     //making temp point to nothing
@@ -74,7 +74,7 @@ node* create_node(airplane plane)
 node* prepend_node(node* list, node* new_node)
 {
     // Insert your code here
-   
+
 
     //NULL check (if list is empty)
     if (list == NULL) {
@@ -83,12 +83,12 @@ node* prepend_node(node* list, node* new_node)
         return list;
     }
     // what if new_node is NULL 
-    
+
     //list is not empty
     //make new node point to where list is pointing to
     new_node->next = list;
     list = new_node;
-    
+
 
     // replace this line with something appropriate
     return list;
@@ -108,18 +108,29 @@ node* prepend_node(node* list, node* new_node)
 node* delete_node(node* list)
 {
     // Insert your code here
-    
+
     //NULL check
     if (list == NULL) {
-        return NULL;
+        return list;
     }
 
-    node* ptr = list;
+    node* ptr;
 
     ptr = list;
     list = list->next;
-    //ptr ->next = NULL;
+
+   
+    ptr->plane.capacity = NULL;
+    ptr->plane.cruising_altitude = NULL;
+    ptr->plane.maximum_speed_kph = NULL;
+    ptr->plane.priority = NULL;
+    ptr->plane.city_destination = NULL;
+    ptr->plane.city_origin = NULL;
+    ptr->plane.flight_number = NULL;
+  
     free(ptr);
+   
+    ptr = NULL;
 
 
     // replace this line with something appropriate
@@ -136,7 +147,7 @@ node* delete_node(node* list)
 int get_length(node* list)
 {
     // Insert your code here
-    
+
     //NULL check
     if (list == NULL) {
         return 0;
@@ -164,31 +175,24 @@ int get_length(node* list)
  */
 node* delete_list(node* list)
 {
+
     // Insert your code here
     //NULL
     if (list == NULL) {
         return list;
     }
-    
+
     int length = get_length(list);
-    node* deleted_node = list;
-    list = list->next;
+    //list = list->next;
 
-    if (length == 1) {
-        deleted_node = NULL;
-        free(deleted_node);
-        return deleted_node;
-    }
-    
     while (list != NULL) {
-        free(deleted_node);
-        deleted_node = list;
+        node* sac_node = list;
         list = list->next;
+        free(sac_node);
+        sac_node = NULL;
     }
-
-    free(deleted_node);
     // replace this line with something appropriate
-    return list;
+    return NULL;
 }
 
 /*
@@ -209,23 +213,14 @@ void print_node(node* node_to_print)
     if (node_to_print == NULL) {
         return;
     }
-
-    /*typedef struct airplane {
-	// Add your member elements here
-	int flight_number;
-	char* city_origin;
-	char* city_destination;
-	int	priority;
-	int	maximum_speed_kph;
-	int	cruising_altitude;
-	int	capacity;
-} airplane;*/
-
-   /* printf("flight_number: ");
-    printf("city_origin: ");
-    printf("flight_number: ");
-    printf("flight_number: ");
-    printf("flight_number: "); */
+    printf("flight_number: %d\n", node_to_print->plane.flight_number);
+    printf("city_origin: %c\n", node_to_print->plane.city_origin);
+    printf("city_desitnation: %c\n", node_to_print->plane.city_destination);
+    printf("priority: %d\n", node_to_print->plane.priority);
+    printf("maximum_speed_kph: %d\n", node_to_print->plane.maximum_speed_kph);
+    printf("cruising_altitude: %d\n", node_to_print->plane.cruising_altitude);
+    printf("capacity: %d\n", node_to_print->plane.capacity);
+    return;
 }
 
 /*
@@ -241,7 +236,15 @@ void print_node(node* node_to_print)
  */
 void print_list(node* list_to_print)
 {
-    // Insert your code here
+    if (list_to_print == NULL) {
+        return;
+    }
+    node* ptr;
+    ptr = list_to_print;
+    while (ptr != NULL) {
+        print_node(list_to_print);
+        ptr = ptr->next;
+    }
 
 }
 
@@ -256,7 +259,6 @@ void print_list(node* list_to_print)
  */
 node* reverse(node* list)
 {
-    // Insert your code here
     //Null check
     if (list == NULL) {
         return NULL;
@@ -269,7 +271,7 @@ node* reverse(node* list)
     ptr = list;
     prev = NULL;
     next = NULL;
-    
+
 
     while (ptr != NULL) {
         next = ptr->next;
@@ -279,7 +281,6 @@ node* reverse(node* list)
     }
 
     list = prev;
-    // replace this line with something appropriate
     return list;
 }
 
@@ -297,49 +298,78 @@ node* reverse(node* list)
  */
 node* remove_from_list(node* list, char* destination_city)
 {
-    // Insert your code here
-
     //NULL check
     if (list == NULL) {
         return list;
     }
 
     //only one thing in your list
-    if (list->next == NULL) {
-        if (strcmp(list->plane.city_destination, destination_city) == 0) {
-            list = NULL;
-            free(list);
-            return NULL;
-        }
-    }
+
 
     node* ptr;
     node* prev;
-    node* next;
+    node* future;
+    int i = 0;
 
+    //node* d_node;
     ptr = list;
+
+    //only one thing in your list
+
+    if ((strcmp(list->plane.city_destination, destination_city) == 0)) {
+        //node* delete_node1 = list;
+      
+        //list = list->next;
+        //free(delete_node1);
+        //free(list);
+   
+        if (list->next == NULL) { free(list); return NULL; }
+        else {
+            node* ptr_d = list;
+            list = list->next;
+            free(ptr_d);
+            ptr_d = NULL;
+        }
+
+        
+        //delete_node1 = NULL;
+
+        return list;
+    }
+
+
+   // i = get_length(list);
+    // ptr = list;
     prev = ptr;
     ptr = ptr->next;
 
     while (ptr != NULL) {
-        next = ptr->next;
+        future = ptr->next;
         if (strcmp(ptr->plane.city_destination, destination_city) == 0) {
-            prev->next = ptr->next;
-            free(ptr);
-            ptr = next;
-            prev = ptr;
+            //node* delete_node = ptr;
+            prev->next = future;
+            delete_node(ptr);
+            //ptr = future;
+            //free(delete_node);
+            //delete_node = NULL;
+            return list;
+
+
+
+           // ptr = future;
+            //d_node = ptr;
+           // prev = ptr;
+           // ptr = ptr->next;
+            //free(d_node);
 
         }
+
         else {
             prev = ptr;
-            ptr = next;
+            ptr = future;
         }
-       
+
     }
-
-
-   
-    // replace this line with something appropriate
     return list;
 }
 
@@ -380,7 +410,7 @@ node* retrieve_nth(node* list, int ordinality)
         ptr = ptr->next;
         i++;
     }
-    
+
 
     // replace this line with something appropriate
     return ptr;
@@ -408,19 +438,18 @@ node* insert_nth(node* list, node* node_to_insert, int ordinality)
 {
     // Insert your code here
     //null check
-    if ((list == NULL)  && (ordinality != 1)) {
-        return list;
+    if (list == NULL && ordinality != 1) {
+        return NULL;
     }
     //ord checks
-    if ((ordinality <= 0) || (ordinality > get_length(list))) {
-        return NULL;
+    if ((ordinality <= 0) || (ordinality > (get_length(list) + 1))) {
+        return list;
 
     }
     if (node_to_insert == NULL) {
-        return NULL;
+        return list;
     }
     if (ordinality == 1) {
-        
         node_to_insert->next = list;
         list = node_to_insert;
         return list;
@@ -433,21 +462,22 @@ node* insert_nth(node* list, node* node_to_insert, int ordinality)
     prev = ptr;
     ptr = ptr->next;
 
+
     int i = 1;
 
     while (ptr != NULL) {
         i++;
         if (i == ordinality) {
-                node_to_insert->next = ptr;
-                prev->next = node_to_insert;
+            node_to_insert->next = ptr;
+            prev->next = node_to_insert;
         }
 
         prev = ptr;
         ptr = ptr->next;
     }
-
-
-
-    // replace this line with something appropriate
+    if (ordinality == get_length(list) + 1) {
+        node_to_insert->next = ptr;
+        prev->next = node_to_insert;
+    }
     return list;
 }
