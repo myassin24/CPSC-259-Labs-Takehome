@@ -52,8 +52,47 @@ node* create_node(airplane plane)
     node* temp;
     temp = (node*)malloc(sizeof(node));
 
-    //we need to give the temp node the information from the given plane 
-    temp->plane = plane;
+   
+    //temp->plane = plane;
+
+    //copying each field of plane properly just the ints
+
+    temp->plane.flight_number = plane.flight_number;
+    temp->plane.priority = plane.priority;
+    temp->plane.maximum_speed_kph = plane.maximum_speed_kph;
+    temp->plane.cruising_altitude = plane.cruising_altitude;
+    temp->plane.capacity = plane.capacity;
+
+    // allocate memory and copy plane city o and cityd;
+
+    if (plane.city_origin != NULL) {
+        int city_o_length = strlen(plane.city_origin);       //size of malloc for city o
+        temp->plane.city_origin = (char*)malloc(city_o_length * sizeof(char)); //allocate
+        strcpy(temp->plane.city_origin, plane.city_origin);  //copy contents of city o
+
+
+    }
+    else {
+        free(temp->plane.city_origin);
+        temp->plane.city_origin = NULL;
+        return temp;
+    }
+
+    if (plane.city_destination != NULL) {
+        int city_d_length = strlen(plane.city_destination);    //size of malloc for city d
+        temp->plane.city_destination = (char*)malloc(city_d_length * sizeof(char));  //allocate
+        strcpy(temp->plane.city_destination, plane.city_destination); //copy contents of city d
+
+
+    }
+    else {
+        free(temp->plane.city_destination);
+        temp->plane.city_destination = NULL;
+        return temp;
+    }
+
+   
+    
     //making temp point to nothing
     temp->next = NULL;
 
@@ -114,20 +153,31 @@ node* delete_node(node* list)
         return list;
     }
 
+   if (list->next == NULL) {
+        free(list);
+        list = NULL;
+        return NULL;
+    }
+    
+
     node* ptr;
+   
+   
 
     ptr = list;
+    //char* city_o = ptr->plane.city_origin;
+    //char* city_d = ptr->plane.city_destination;
+
     list = list->next;
 
    
-    ptr->plane.capacity = NULL;
-    ptr->plane.cruising_altitude = NULL;
-    ptr->plane.maximum_speed_kph = NULL;
-    ptr->plane.priority = NULL;
-    ptr->plane.city_destination = NULL;
-    ptr->plane.city_origin = NULL;
-    ptr->plane.flight_number = NULL;
-  
+    /*ptr->plane.capacity = 0;
+    ptr->plane.cruising_altitude = 0;
+    ptr->plane.maximum_speed_kph = 0;
+    ptr->plane.priority = 0;
+    ptr->plane.flight_number = 0;*/
+    //free(city_o);
+    //free(city_d);
     free(ptr);
    
     ptr = NULL;
@@ -306,13 +356,7 @@ node* remove_from_list(node* list, char* destination_city)
     //only one thing in your list
 
 
-    node* ptr;
-    node* prev;
-    node* future;
-    int i = 0;
 
-    //node* d_node;
-    ptr = list;
 
     //only one thing in your list
 
@@ -323,9 +367,11 @@ node* remove_from_list(node* list, char* destination_city)
         //free(delete_node1);
         //free(list);
    
-        if (list->next == NULL) { free(list); return NULL; }
+        if (list->next == NULL) { free(list); 
+            return NULL; }
         else {
-            node* ptr_d = list;
+            node* ptr_d = (node*)malloc(sizeof(node));
+            ptr_d = list;
             list = list->next;
             free(ptr_d);
             ptr_d = NULL;
@@ -338,6 +384,13 @@ node* remove_from_list(node* list, char* destination_city)
     }
 
 
+    node* ptr = (node*)malloc(sizeof(node));
+    node* prev;
+    node* future;
+    //int i = 0;
+
+    //node* d_node;
+    ptr = list;
    // i = get_length(list);
     // ptr = list;
     prev = ptr;
@@ -346,12 +399,14 @@ node* remove_from_list(node* list, char* destination_city)
     while (ptr != NULL) {
         future = ptr->next;
         if (strcmp(ptr->plane.city_destination, destination_city) == 0) {
-            //node* delete_node = ptr;
+            node* delete_node = (node*)malloc(sizeof(node));
+            delete_node = ptr;
             prev->next = future;
-            delete_node(ptr);
+            ptr = future;
+            //delete_node(ptr);
             //ptr = future;
-            //free(delete_node);
-            //delete_node = NULL;
+            free(delete_node);
+            delete_node = NULL;
             return list;
 
 
